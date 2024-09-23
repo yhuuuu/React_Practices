@@ -7,12 +7,14 @@ const userStore = createSlice({
     name: "user",
     initialState: {
         //response data stracture 
-        token: ''
+        token: localStorage.getItem('token_key') || ''
     },
     // synchronous reducer setUserToken to update the token in the state
     reducers: {
         setUserToken(state, action) {
             state.token = action.payload
+            //save token in localStorage
+            localStorage.setItem('token_key', action.payload)
         }
     }
 })
