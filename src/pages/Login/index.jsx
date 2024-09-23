@@ -1,10 +1,18 @@
 import './index.scss'
 import { Card, Form, Input, Button } from 'antd'
 import logo from '@/assets/logo.png'
+import { useDispatch } from 'react-redux'
+import { fetchLogin } from '@/store/modules/user'
+
 
 const Login = () => {
+  const dispatch = useDispatch()
   const onFinish = (values) => {
     console.log('Success:', values);
+
+    //dispatch asynchronous action fetchlogin
+    dispatch(fetchLogin(values))
+
   };
   return (
     <div className="login">
@@ -13,29 +21,29 @@ const Login = () => {
         {/* 登录表单 */}
         <Form onFinish={onFinish} validateTrigger="onBlur">
           <Form.Item
-            name="username"
+            name="mobile"
             rules={[
               {
                 required: true,
-                message: 'Please input your username!',
+                message: 'Please input your phone number!',
               },
 
-              // {
-              //   pattern:/^1[3-9]\d{9}/,
-              //   message: 'Please input the correct format'
-              // }
+              {
+                pattern: /^1[3-9]\d{9}/,
+                message: 'Please input the correct format'
+              }
             ]}>
-            <Input size="large" placeholder="Username" />
+            <Input size="large" placeholder="mobile" />
           </Form.Item>
           <Form.Item
-            name="password"
+            name="code"
             rules={[
               {
                 required: true,
-                message: 'Please input your password!'
+                message: 'Please input your code!'
               }
             ]}>
-            <Input size="large" placeholder="Password" />
+            <Input size="large" placeholder="code" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" size="large" block>
