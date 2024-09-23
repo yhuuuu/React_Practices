@@ -8,6 +8,7 @@ const userStore = createSlice({
     initialState: {
         //response data stracture 
         token: localStorage.getItem('token_key') || ''
+         
     },
     // synchronous reducer setUserToken to update the token in the state
     reducers: {
@@ -28,9 +29,9 @@ const userReducer = userStore.reducer
 const fetchLogin = (loginForm) => {
     return async(dispatch) =>{
         // 1. send asynchronous request
-        const res = request.post('/authorizations', loginForm)
+        const res = await request.post('/authorizations', loginForm)
         // 2. submit synchronous action and update token
-        dispatch(setUserToken(res.data))
+        dispatch(setUserToken(res.data.token));
     }
 }
 export { fetchLogin, setUserToken }

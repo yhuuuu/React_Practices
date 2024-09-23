@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate()
 
   const onFinish = async (values) => {
-    //console.log('Success:', values);
+    console.log('Success:', values);
     //dispatch asynchronous action fetchlogin
     await dispatch(fetchLogin(values))
     //1. navigate layout page after successfully login
@@ -20,7 +20,7 @@ const Login = () => {
     message.success('login success ')
   };
   return (
-     
+
     <div className="login">
       <Card className="login-container">
         <img className="login-logo" src={logo} alt="" />
