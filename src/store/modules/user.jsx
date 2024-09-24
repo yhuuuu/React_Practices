@@ -1,13 +1,13 @@
 // users status management 
 import { createSlice } from "@reduxjs/toolkit";
 import { request } from '@/utils'
-
+import { setToken as _setToken ,getToken,removeToken } from "@//utils";
 
 const userStore = createSlice({
     name: "user",
     initialState: {
         //response data stracture 
-        token: localStorage.getItem('token_key') || ''
+        token: getToken() || ''
          
     },
     // synchronous reducer setUserToken to update the token in the state
@@ -15,7 +15,7 @@ const userStore = createSlice({
         setUserToken(state, action) {
             state.token = action.payload
             //save token in localStorage
-            localStorage.setItem('token_key', action.payload)
+            _setToken(action.payload)
         }
     }
 })
