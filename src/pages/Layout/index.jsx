@@ -1,18 +1,5 @@
-import React, { useEffect } from 'react'
-import { request } from '../../utils'
-
-// const Layout = () => {
-//  useEffect(()=>{
-//   //test if token is retrieve from the request
-//   request.get('/user/profile')
-//  },[])
-//   return (
-//     <div>Layout</div>
-//   )
-// }
-
-// export default Layout
-
+import { useEffect } from 'react'
+import { request } from '@/utils'
 import { Layout, Menu, Popconfirm } from 'antd'
 import {
   HomeOutlined,
@@ -21,29 +8,34 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons'
 import './index.scss'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const { Header, Sider } = Layout
 
 const items = [
   {
     label: '首页',
-    key: '1',
+    key: '/',
     icon: <HomeOutlined />,
   },
   {
     label: '文章管理',
-    key: '2',
+    key: '/article',
     icon: <DiffOutlined />,
   },
   {
     label: '创建文章',
-    key: '3',
+    key: '/publish',
     icon: <EditOutlined />,
   },
 ]
 
 const GeekLayout = () => {
+  const navigate = useNavigate()
+  const onMenuClick = (item) => {
+    console.log('Clicked', item.key);
+    navigate(item.key)
+  }
   return (
     <Layout>
       <Header className="header">
@@ -64,11 +56,13 @@ const GeekLayout = () => {
             theme="dark"
             defaultSelectedKeys={['1']}
             items={items}
-            style={{ height: '100%', borderRight: 0 }}></Menu>
+            style={{ height: '100%', borderRight: 0 }}
+            onClick={onMenuClick}>
+          </Menu>
         </Sider>
         <Layout className="layout-content" style={{ padding: 20 }}>
           {/* Secondary route */}
-          <Outlet/>
+          <Outlet />
         </Layout>
       </Layout>
     </Layout>
