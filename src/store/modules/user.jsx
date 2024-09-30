@@ -7,8 +7,8 @@ const userStore = createSlice({
     name: "user",
     initialState: {
         //response data stracture 
-        token: getToken() || ''
-         
+        token: getToken() || '',
+        userInfo:{}
     },
     // synchronous reducer setUserToken to update the token in the state
     reducers: {
@@ -16,16 +16,19 @@ const userStore = createSlice({
             state.token = action.payload
             //save token in localStorage
             _setToken(action.payload)
+        },
+        setUserInfo(state, action){
+             state.userInfo = action.payload
         }
     }
 })
 
 // This action creator will be used in components or asynchronous functions to dispatch the action that updates the token
-const { setUserToken } = userStore.actions
+const { setUserToken, setUserInfo } = userStore.actions
 //This is exported as the default and will be registered in the Redux store to handle the updates to the user state slice
 const userReducer = userStore.reducer
 
-// asynchronous
+// Asynchronous login
 const fetchLogin = (loginForm) => {
     return async(dispatch) =>{
         // 1. send asynchronous request
@@ -34,5 +37,12 @@ const fetchLogin = (loginForm) => {
         dispatch(setUserToken(res.data.token));
     }
 }
-export { fetchLogin, setUserToken }
+// Asynchronous fetching of personal information
+const fetchUserInfo = () => {
+    return async(dispatch) =>{
+    const res = await request.get('/user/profile')
+    dispatch(setUserInfo(res.data));
+}}
+
+export { fetchLogin, setUserToken, fetchUserInfo}
 export default userReducer
