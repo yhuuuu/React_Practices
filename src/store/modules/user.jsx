@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { request } from '@/utils'
 import { setToken as _setToken, getToken, removeToken } from "@/utils";
+import { loginAPI, getProfileAPI } from "@/api/user";
 
 const userStore = createSlice({
     name: "user",
@@ -38,8 +39,9 @@ const userReducer = userStore.reducer
 // Asynchronous login
 const fetchLogin = (loginForm) => {
     return async (dispatch) => {
+
         // 1. send asynchronous request
-        const res = await request.post('/authorizations', loginForm)
+        const res = await loginAPI(loginForm)
         // 2. submit synchronous action and update token
         dispatch(setUserToken(res.data.token));
     }
@@ -47,7 +49,7 @@ const fetchLogin = (loginForm) => {
 // Asynchronous fetching of personal information
 const fetchUserInfo = () => {
     return async (dispatch) => {
-        const res = await request.get('/user/profile')
+        const res = await getProfileAPI()
         dispatch(setUserInfo(res.data));
     }
 }
