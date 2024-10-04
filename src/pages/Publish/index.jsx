@@ -1,14 +1,4 @@
-import {
-  Card,
-  Breadcrumb,
-  Form,
-  Button,
-  Radio,
-  Input,
-  Upload,
-  Space,
-  Select
-} from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import './index.scss'
@@ -19,9 +9,7 @@ import { getChannelAPI } from '@/api/article'
 import { createAriticleAPI } from '@/api/article'
 
 
-
 const { Option } = Select
-
 const Publish = () => {
   //get channel list 
   const [channelList, setChannelList] = useState([])
@@ -38,8 +26,7 @@ const Publish = () => {
   // Sumbit form
   const onFinish = (formData) => {
     console.log(formData);
-    const{title, content,channel_id} = formData
-
+    const { title, content, channel_id } = formData
     // 1. Format form data to match with API body format
     const reqData = {
       title,
@@ -54,7 +41,13 @@ const Publish = () => {
     createAriticleAPI(reqData)
   }
 
-
+  // Upload image callback
+  const [imageList, setImageList] = useState()
+  const handleChange = (value) => {
+    console.log('uploading', value);
+    setImageList(value.fileList)
+  }
+  
   return (
     <div className="publish">
       <Card
@@ -89,6 +82,35 @@ const Publish = () => {
               {channelList.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>
               )}
             </Select>
+          </Form.Item>
+
+
+          <Form.Item label="封面">
+            <Form.Item name="type">
+              <Radio.Group>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* 
+            *listType: picture upload box style
+            *showUploadList: control upload list
+            * After setting up action and name , it will upload and triger handleChange callback function
+            * image will upload as a key "image" to the server 
+            * */}
+
+            <Upload
+              listType="picture-card"
+              showUploadList
+              action={'http://geek.itheima.net/v1_0/upload'}
+              name='image'
+              onChange={handleChange}
+            >
+              <div style={{ marginTop: 8 }}>
+                <PlusOutlined />
+              </div>
+            </Upload>
           </Form.Item>
           <Form.Item
             label="内容"
