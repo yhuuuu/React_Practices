@@ -16,22 +16,45 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
 import { getChannelAPI } from '@/api/article'
+import { createAriticleAPI } from '@/api/article'
+
 
 
 const { Option } = Select
 
 const Publish = () => {
   //get channel list 
-  const [channelList, setChannelLIst] = useState([])
+  const [channelList, setChannelList] = useState([])
 
   useEffect(() => {
     // encap function
     const getChannelList = async () => {
       const res = await getChannelAPI()
-      setChannelLIst(res.data.channels)
+      setChannelList(res.data.channels)
     }
     getChannelList()
   }, [])
+
+  // Sumbit form
+  const onFinish = (formData) => {
+    console.log(formData);
+    const{title, content,channel_id} = formData
+
+    // 1. Format form data to match with API body format
+    const reqData = {
+      title,
+      content,
+      cover: {
+        type: 0,
+        images: []
+      },
+      channel_id
+    }
+    // 2. Call API
+    createAriticleAPI(reqData)
+  }
+
+
   return (
     <div className="publish">
       <Card
@@ -47,6 +70,7 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
+          onFinish={onFinish}
         >
           <Form.Item
             label="标题"

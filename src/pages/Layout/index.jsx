@@ -38,7 +38,7 @@ const GeekLayout = () => {
   // highlight menu btn when is clicked
   const location = useLocation()
   const selectedKey = location.pathname
-  console.log('current location', location.pathname);
+  // console.log('current location', location.pathname);
 
   // show personal info and avtive action
   const dispatch = useDispatch()

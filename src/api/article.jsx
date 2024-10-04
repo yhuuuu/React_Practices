@@ -9,3 +9,11 @@ export function getChannelAPI() {
         method: 'GET'
     })
 }
+
+export function createAriticleAPI(data) {
+    return request({
+        url:'/mp/articles?draft=false',
+        method:'POST',
+        data
+    })
+}
