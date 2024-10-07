@@ -1,4 +1,4 @@
-import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import './index.scss'
@@ -15,7 +15,7 @@ const Publish = () => {
   const [channelList, setChannelList] = useState([])
 
   useEffect(() => {
-    // encap function
+    
     const getChannelList = async () => {
       const res = await getChannelAPI()
       setChannelList(res.data.channels)
@@ -26,14 +26,17 @@ const Publish = () => {
   // Sumbit form
   const onFinish = (formData) => {
     console.log(formData);
+    //Makeing sure users image upload amount equal to the imageType num
+    if(imageList.length != uploadImageType)
+      return message.warning('Upload image type does not match with image upload amount')
     const { title, content, channel_id } = formData
     // 1. Format form data to match with API body format
     const reqData = {
       title,
       content,
       cover: {
-        type: 0,
-        images: []
+        type: uploadImageType, //image cover
+        images: imageList.map(item=>item.response.data.url) //imageList
       },
       channel_id
     }
@@ -50,6 +53,7 @@ const Publish = () => {
 
   // Image type change callback
   const [uploadImageType, setUploadImageType] = useState(0)
+  // re-render every time when upload image selected
   const handleTypeChange = (e) => {
     console.log('cover type changed', e.target.value);
     setUploadImageType(e.target.value)
@@ -107,7 +111,7 @@ const Publish = () => {
             * image will upload as a key "image" to the server 
             * */}
 
-            { uploadImageType > 0 && <Upload
+            {uploadImageType > 0 && <Upload
               listType="picture-card"
               showUploadList
               action={'http://geek.itheima.net/v1_0/upload'}
