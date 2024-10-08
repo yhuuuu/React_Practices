@@ -4,30 +4,21 @@ import { Link } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useEffect, useState } from 'react'
-import { getChannelAPI } from '@/api/article'
-import { createAriticleAPI } from '@/api/article'
+import { useState } from 'react'
+import useChannel from '../../hooks/useChannel'
+
 
 
 const { Option } = Select
 const Publish = () => {
-  //get channel list 
-  const [channelList, setChannelList] = useState([])
 
-  useEffect(() => {
-    
-    const getChannelList = async () => {
-      const res = await getChannelAPI()
-      setChannelList(res.data.channels)
-    }
-    getChannelList()
-  }, [])
+  const { channelList } = useChannel()
 
   // Sumbit form
   const onFinish = (formData) => {
     console.log(formData);
     //Makeing sure users image upload amount equal to the imageType num
-    if(imageList.length != uploadImageType)
+    if (imageList.length != uploadImageType)
       return message.warning('Upload image type does not match with image upload amount')
     const { title, content, channel_id } = formData
     // 1. Format form data to match with API body format
@@ -36,7 +27,7 @@ const Publish = () => {
       content,
       cover: {
         type: uploadImageType, //image cover
-        images: imageList.map(item=>item.response.data.url) //imageList
+        images: imageList.map(item => item.response.data.url) //imageList
       },
       channel_id
     }
