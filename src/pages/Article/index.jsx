@@ -5,6 +5,9 @@ import { Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
 import useChannel from '@/hooks/useChannel'
+import { getAticleListAPI } from '@/api/article'
+import { useEffect, useState } from 'react'
+
 
 
 const { Option } = Select
@@ -81,6 +84,18 @@ const Article = () => {
     }
   ]
   const { channelList } = useChannel()
+
+  // get article list
+  const [articleList, setArticleList] = useState([])
+  const [articleCount, setArticleCount]= useState()
+  useEffect(() => {
+    async function getAticleList() {
+      const res = await getAticleListAPI()
+      setArticleList(res.data.results)
+      setArticleCount(res.data.total_count)
+    }
+    getAticleList()
+  }, [])
   return (
     <div>
       {/* Article filter section */}
@@ -127,9 +142,10 @@ const Article = () => {
           </Form.Item>
         </Form>
       </Card>
+
       {/* Article list section */}
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={data} />
+      <Card title={`根据筛选条件共查询到 ${articleCount} 条结果：`}>
+        <Table rowKey="id" columns={columns} dataSource={articleList} />
       </Card>
     </div>
   )
