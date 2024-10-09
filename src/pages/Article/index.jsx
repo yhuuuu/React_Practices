@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Popconfirm,message } from 'antd'
 //import locale from 'antd/es/date-picker/locale/zh_CN'
 import { Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
 import useChannel from '@/hooks/useChannel'
-import { getAticleListAPI } from '@/api/article'
+import { getArticleListAPI, deleteArticleAPI } from '@/api/article'
 import { useEffect, useState } from 'react'
 
 const { Option } = Select
@@ -61,12 +61,20 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="Delete"
+              description="Are you sure to delete this aricle?"
+              onConfirm={() => confirm(data)}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No">
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         )
       }
@@ -87,6 +95,18 @@ const Article = () => {
   //     title: 'wkwebview离线化加载h5资源解决方案'
   //   }
   // ]
+  const confirm = async(e) => {
+    //console.log(e);
+    //console.log('deleting', e.id)
+    await deleteArticleAPI(e.id)
+    setReqData({
+      ...reqData
+    })
+  };
+  const cancel = (e) => {
+    console.log(e);
+    message.error('Click on No');
+  };
   const { channelList } = useChannel()
 
   // Get article list
@@ -105,12 +125,12 @@ const Article = () => {
   })
 
   useEffect(() => {
-    async function getAticleList() {
-      const res = await getAticleListAPI(reqData)
+    async function getArticleList() {
+      const res = await getArticleListAPI(reqData)
       setArticleList(res.data.results)
       setArticleCount(res.data.total_count)
     }
-    getAticleList()
+    getArticleList()
   }, [reqData])
 
   // 2. get selected filters
@@ -134,7 +154,7 @@ const Article = () => {
     //re-render base on page change
     setReqData({
       ...reqData,
-      page:page //page standalone
+      page: page //page standalone
     })
   }
   return (

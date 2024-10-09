@@ -20,10 +20,18 @@ export function createAriticleAPI(data) {
 }
 
 // Get article list
-export function getAticleListAPI(params) {
+export function getArticleListAPI(params) {
     return request({
         url: '/mp/articles',
         method: 'GET',
         params
+    })
+}
+
+// Delete article 
+export function deleteArticleAPI(id){
+    return request({
+        url:`/mp/articles/${id}`,
+        method: 'DELETE',
     })
 }
