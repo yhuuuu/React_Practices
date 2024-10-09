@@ -10,7 +10,7 @@ export function getChannelAPI() {
     })
 }
 
-// Piulish article
+// Publish article
 export function createAriticleAPI(data) {
     return request({
         url: '/mp/articles?draft=false',
@@ -33,5 +33,13 @@ export function deleteArticleAPI(id){
     return request({
         url:`/mp/articles/${id}`,
         method: 'DELETE',
+    })
+}
+
+//get article info
+export function getArticleById(id){
+    return request({
+        url:`/mp/articles/${id}`,
+        method: 'GET',
     })
 }
