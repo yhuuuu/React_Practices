@@ -113,7 +113,6 @@ const Article = () => {
     getAticleList()
   }, [reqData])
 
-
   // 2. get selected filters
   const onFinish = (formValue) => {
     console.log(formValue)
@@ -125,12 +124,19 @@ const Article = () => {
       begin_pubdate: formValue.date[0].format('YYYY-MM-DD'),
       end_pubdate: formValue.date[1].format('YYYY-MM-DD')
     })
-    
+
     //4. re-render new table data with selected filter
     // rerender list based on reqData using useEffect
     // one reqData change, data list re-render
   }
-
+  const handlePageChange = (page) => {
+    console.log(page);
+    //re-render base on page change
+    setReqData({
+      ...reqData,
+      page:page //page standalone
+    })
+  }
   return (
     <div>
       {/* Article filter section */}
@@ -178,7 +184,11 @@ const Article = () => {
 
       {/* Article list section */}
       <Card title={`根据筛选条件共查询到 ${articleCount} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={articleList} />
+        <Table rowKey="id" columns={columns} dataSource={articleList} pagination={{
+          total: articleCount,
+          pageSize: reqData.per_page,
+          onChange: handlePageChange
+        }} />
       </Card>
     </div>
   )
