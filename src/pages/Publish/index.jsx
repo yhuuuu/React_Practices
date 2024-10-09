@@ -59,12 +59,26 @@ const Publish = () => {
     //get article id from URL
     async function getArticleDetail() {
       const res = await getArticleById(articleId)
-      form.setFieldsValue(res.data)
+      form.setFieldsValue({
+        ...res.data,
+        type: res.data.cover.type
+      })
+      // autofill cover type
+      setUploadImageType(res.data.cover.type)
+      // show uploaded image(s) ({url:url})
+      setImageList(res.data.cover.images.map(url =>({
+        url:url
+      })))
+     
     }
     getArticleDetail()
-   
+    
+
     //use setFieldsValue from form to backfill article data
   }, [articleId, form])
+
+
+
   return (
     <div className="publish">
       <Card
@@ -82,7 +96,7 @@ const Publish = () => {
           initialValues={{ type: 0 }}
           onFinish={onFinish}
           form={form}
-          
+
         >
           <Form.Item
             label="标题"
@@ -126,6 +140,7 @@ const Publish = () => {
               name='image'
               onChange={handleChange}
               maxCount={uploadImageType}
+              fileList={imageList}
             >
               <div style={{ marginTop: 8 }}>
                 <PlusOutlined />
