@@ -8,8 +8,6 @@ import useChannel from '@/hooks/useChannel'
 import { getAticleListAPI } from '@/api/article'
 import { useEffect, useState } from 'react'
 
-
-
 const { Option } = Select
 const { RangePicker } = DatePicker
 
@@ -17,8 +15,8 @@ const { RangePicker } = DatePicker
 const Article = () => {
   // 准备列数据
   const status = {
-    1:<Tag color="yellow">审核中</Tag>,
-    2:<Tag color="green">审核通过</Tag>
+    1: <Tag color="yellow">审核中</Tag>,
+    2: <Tag color="green">审核通过</Tag>
   }
 
   const columns = [
@@ -75,33 +73,64 @@ const Article = () => {
     }
   ]
   // 准备表格body数据
-  const data = [
-    {
-      id: '8218',
-      comment_count: 0,
-      cover: {
-        images: [],
-      },
-      like_count: 0,
-      pubdate: '2019-03-11 09:00:00',
-      read_count: 2,
-      status: 2,
-      title: 'wkwebview离线化加载h5资源解决方案'
-    }
-  ]
+  // const data = [
+  //   {
+  //     id: '8218',
+  //     comment_count: 0,
+  //     cover: {
+  //       images: [],
+  //     },
+  //     like_count: 0,
+  //     pubdate: '2019-03-11 09:00:00',
+  //     read_count: 2,
+  //     status: 2,
+  //     title: 'wkwebview离线化加载h5资源解决方案'
+  //   }
+  // ]
   const { channelList } = useChannel()
 
-  // get article list
+  // Get article list
   const [articleList, setArticleList] = useState([])
   const [articleCount, setArticleCount] = useState(0)
+
+  // Filter feature
+  // 1. Prepare params
+  const [reqData, setReqData] = useState({
+    status: '',
+    channel_id: '',
+    begin_pubdate: '',
+    end_pubdate: '',
+    page: 1,
+    per_page: 10
+  })
+
   useEffect(() => {
     async function getAticleList() {
-      const res = await getAticleListAPI()
+      const res = await getAticleListAPI(reqData)
       setArticleList(res.data.results)
       setArticleCount(res.data.total_count)
     }
     getAticleList()
-  }, [])
+  }, [reqData])
+
+
+  // 2. get selected filters
+  const onFinish = (formValue) => {
+    console.log(formValue)
+    //3 put formValue in the params 
+    setReqData({
+      ...reqData,
+      status: formValue.status,
+      channel_id: formValue.channel_id,
+      begin_pubdate: formValue.date[0].format('YYYY-MM-DD'),
+      end_pubdate: formValue.date[1].format('YYYY-MM-DD')
+    })
+    
+    //4. re-render new table data with selected filter
+    // rerender list based on reqData using useEffect
+    // one reqData change, data list re-render
+  }
+
   return (
     <div>
       {/* Article filter section */}
@@ -114,7 +143,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: '' }}>
+        <Form initialValues={{ status: '' }} onFinish={onFinish}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={''}>全部</Radio>
