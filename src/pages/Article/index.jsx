@@ -16,6 +16,11 @@ const { RangePicker } = DatePicker
 
 const Article = () => {
   // 准备列数据
+  const status = {
+    1:<Tag color="yellow">审核中</Tag>,
+    2:<Tag color="green">审核通过</Tag>
+  }
+
   const columns = [
     {
       title: '封面',
@@ -33,7 +38,8 @@ const Article = () => {
     {
       title: '状态',
       dataIndex: 'status',
-      render: data => <Tag color="green">审核通过</Tag>
+      // render: data => data === 1 ? <Tag color="yellow">审核中</Tag>:<Tag color="green">审核通过</Tag>
+      render: data => status[data]
     },
     {
       title: '发布时间',
@@ -87,7 +93,7 @@ const Article = () => {
 
   // get article list
   const [articleList, setArticleList] = useState([])
-  const [articleCount, setArticleCount]= useState()
+  const [articleCount, setArticleCount] = useState(0)
   useEffect(() => {
     async function getAticleList() {
       const res = await getAticleListAPI()
@@ -124,8 +130,6 @@ const Article = () => {
               style={{ width: 120 }}
             >
               {channelList.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
-
-
             </Select>
           </Form.Item>
 
