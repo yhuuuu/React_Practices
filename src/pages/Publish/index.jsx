@@ -13,7 +13,7 @@ const { Option } = Select
 const Publish = () => {
 
   const { channelList } = useChannel()
-
+  
   // Sumbit form
   const onFinish = (formData) => {
     console.log(formData);
@@ -53,6 +53,7 @@ const Publish = () => {
   // Autofill data
   const [searchParams] = useSearchParams()
   const articleId = searchParams.get('id')
+
   //console.log(articleId);
   const [form] = Form.useForm()
   useEffect(() => {
@@ -66,13 +67,14 @@ const Publish = () => {
       // autofill cover type
       setUploadImageType(res.data.cover.type)
       // show uploaded image(s) ({url:url})
-      setImageList(res.data.cover.images.map(url =>({
-        url:url
+      setImageList(res.data.cover.images.map(url => ({
+        url: url
       })))
-     
     }
-    getArticleDetail()
-    
+    //only published article has article id and able to edit
+    if(articleId){
+      getArticleDetail()
+    }
 
     //use setFieldsValue from form to backfill article data
   }, [articleId, form])
@@ -85,7 +87,7 @@ const Publish = () => {
         title={
           <Breadcrumb items={[
             { title: <Link to={'/'}>首页</Link> },
-            { title: '发布文章' }
+            { title: `${articleId ? 'Edit' : 'Publish'} Article` }
           ]}
           />
         }
