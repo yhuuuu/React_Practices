@@ -6,14 +6,14 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useEffect, useState } from 'react'
 import useChannel from '../../hooks/useChannel'
-import { createAriticleAPI, getArticleById } from '../../api/article'
+import { createAriticleAPI, getArticleById, updateAriticleAPI } from '../../api/article'
 
 
 const { Option } = Select
 const Publish = () => {
 
   const { channelList } = useChannel()
-  
+
   // Sumbit form
   const onFinish = (formData) => {
     console.log(formData);
@@ -22,17 +22,29 @@ const Publish = () => {
       return message.warning('Upload image type does not match with image upload amount')
     const { title, content, channel_id } = formData
     // 1. Format form data to match with API body format
+    // if the article is in edit mode, the stracture will  be differnt
     const reqData = {
       title,
       content,
       cover: {
         type: uploadImageType, //image cover
-        images: imageList.map(item => item.response.data.url) //imageList
+        images: imageList.map(item => {
+          if (item.reponse) {
+            return item.reponse.data.url
+          } else {
+            return item.url
+          }
+        })//imageList
       },
       channel_id
     }
-    // 2. Call API
-    createAriticleAPI(reqData)
+    // 2. Call diffent API base on if article id exiced or not
+    if (articleId) {
+      updateAriticleAPI({...reqData , id:articleId})
+    } else {
+      createAriticleAPI(reqData)
+    }
+
   }
 
   // Upload image callback
@@ -72,7 +84,7 @@ const Publish = () => {
       })))
     }
     //only published article has article id and able to edit
-    if(articleId){
+    if (articleId) {
       getArticleDetail()
     }
 
